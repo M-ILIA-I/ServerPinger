@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <p>{{servers}}</p>
+    <p>{{data}}</p>
+    <canvas id="myChart"></canvas>
+
+    <script>
+        makeRequest();
+        var ctx = document.getElementById('myChart').getContext('2d');
+        // Use the data passed from Django
+        var labels = "{{ data.labels|safe }}";
+        var values = "{{ data.values|safe }}";
+        
+        var chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'My Chart',
+                    data: values,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        async function makeRequest() {
+            let promise = await fetch('/servers');
+            let data = await promise.json();
+            console.log(data)
+        }
+    </script>
+</body>
+</html>

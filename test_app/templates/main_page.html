@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servers Pinger</title>
+</head>
+<body>
+    <h1 style="color: red;">WHERE IS MY PAGE</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" placeholder="enter ip" name="ip">
+        <button type='submit'>Approove</button>
+    </form>
+    <input  id="myVar" name="variable" value="{{ UPDATE_FREQUENCY }}">
+    <script>
+        var mySetting = document.getElementById("myVar").value;
+        function performAction() {
+            $.ajax({
+                url: '',
+                type: 'GET',
+                success: function (response) {
+                    // Обработайте успешный ответ от Django
+                    console.log(response);
+                },
+                error: function (error) {
+                    // Обработайте ошибку
+                    console.log(error);
+                }
+            });
+        }
+
+        // Вызовите функцию performAction каждые n секунд
+        setInterval(performAction, "{{UPDATE_FREQUENCY}}" * 1000);
+    </script>
+</body>
+
+</html>
