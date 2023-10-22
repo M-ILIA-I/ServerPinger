@@ -22,14 +22,15 @@ from servers_pinger.models import ResponseModel
 from servers_pinger.services import pinger
 from time import sleep
 from . import settings
-from threading import Thread
+import asyncio
+from asgiref.sync import sync_to_async
 
 
-def png():
+async def png():
     while True:
-        adresses = ResponseModel.objects.values('adress')
-        pinger.multiptocessing_ping(list(adresses.values_list('adress', flat=True)))
-        sleep(settings.UPDATE_FREQUENCY)
+        adresses = await sync_to_async(ResponseModel.objects.values)('adress')
+        # await sync_to_async(pinger.multiptocessing_ping(list(adresses.values_list('adress', flat=True))))
+        await asyncio.sleep(settings.UPDATE_FREQUENCY)
 
 
 
@@ -40,5 +41,6 @@ urlpatterns = [
     path('chart/', ChartPage.as_view(), name='cgart-page'),
 ]
 
-thread = Thread(target=png)
-thread.start()
+# loop = asyncio.new_event_loop()
+# loop.run_until_complete(png())
+#asyncio.run(png())

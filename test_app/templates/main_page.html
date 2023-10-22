@@ -15,25 +15,23 @@
         <input type="text" placeholder="enter ip" name="ip">
         <button type='submit'>Approove</button>
     </form>
-    <input  id="myVar" name="variable" value="{{ UPDATE_FREQUENCY }}">
     <script>
-        var mySetting = document.getElementById("myVar").value;
         function performAction() {
             $.ajax({
                 url: '',
                 type: 'GET',
                 success: function (response) {
-                    // Обработайте успешный ответ от Django
+                    // procces succes django responce
                     console.log(response);
                 },
                 error: function (error) {
-                    // Обработайте ошибку
+                    // procces error
                     console.log(error);
                 }
             });
         }
 
-        // Вызовите функцию performAction каждые n секунд
+        // call performAction every n second
         setInterval(performAction, "{{UPDATE_FREQUENCY}}" * 1000);
     </script>
 </body>

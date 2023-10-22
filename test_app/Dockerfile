@@ -6,6 +6,9 @@ RUN addgroup --system app && adduser --system app --ingroup app
 
 WORKDIR $HOME
 
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
 COPY ./requirements.txt $HOME
 
 RUN pip install -r requirements.txt

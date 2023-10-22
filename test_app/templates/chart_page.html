@@ -8,25 +8,26 @@
     <p>{{servers}}</p>
     <p>{{data}}</p>
     <canvas id="myChart"></canvas>
+    <input id="dataset" type="hidden" value="{{ dataset }}">
 
     <script>
-        makeRequest();
-        var ctx = document.getElementById('myChart').getContext('2d');
-        // Use the data passed from Django
-        var labels = "{{ data.labels|safe }}";
-        var values = "{{ data.values|safe }}";
         
-        var chart = new Chart(ctx, {
+        let jsonString = document.querySelector("#dataset").value.replaceAll("'", '"');
+        let dataset = JSON.parse(jsonString).dataset;
+        
+        let ctx = document.getElementById('myChart').getContext('2d');
+        // Use the data passed from Django
+        let labels = [];
+        for(let i = 0; i < 25; i++)
+            labels.push(String(i));
+        let values = "{{ data.values|safe }}";
+
+        console.log(dataset)
+        let chart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
-                datasets: [{
-                    label: 'My Chart',
-                    data: values,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
+                datasets: dataset
             },
             options: {
                 responsive: true,

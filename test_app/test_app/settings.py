@@ -2,12 +2,10 @@ import os
 from pathlib import Path
 
 
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__name__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 # frequency of updates servers responces
-UPDATE_FREQUENCY = 1
+UPDATE_FREQUENCY = 600
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-l)_v6b*)5tq^kfu+yem$r)#xrsk1-t4*&ocx#bt(t+-2n-x6f-'
 
@@ -19,6 +17,10 @@ ALLOWED_HOSTS = ['*',]
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
     'https://localhost',
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
 ]
 
 # Application definition
@@ -33,11 +35,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'servers_pinger',
     'api',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -52,7 +56,7 @@ ROOT_URLCONF = 'test_app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'test_app/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -64,6 +68,24 @@ TEMPLATES = [
         },
     },
 ]
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            'level': 'INFO',
+            "class": "logging.StreamHandler",
+        },
+    },
+    'loggers':{
+        'mailings':{
+            'handlers':['console'],
+            'level':'INFO',
+            'propagate': True,
+        }
+    }
+}
 
 WSGI_APPLICATION = 'test_app.wsgi.application'
 
@@ -77,7 +99,7 @@ DATABASES = {
         'NAME': 'responce_db',
         'USER': 'ilya',
         'PASSWORD': '12345',
-        'HOST': 'localhost',
+        'HOST': os.environ.get('POSTGRES_HOST'),
         'PORT': '5432',
     }
 }
@@ -107,11 +129,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Minsk'
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)
