@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Chart</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <p>{{servers}}</p>
     <p>{{data}}</p>
@@ -11,39 +14,41 @@
     <input id="dataset" type="hidden" value="{{ dataset }}">
 
     <script>
-        
-        let jsonString = document.querySelector("#dataset").value.replaceAll("'", '"');
-        let dataset = JSON.parse(jsonString).dataset;
-        
+
         let ctx = document.getElementById('myChart').getContext('2d');
         // Use the data passed from Django
         let labels = [];
-        for(let i = 0; i < 25; i++)
+        for (let i = 0; i < 25; i++)
             labels.push(String(i));
-        let values = "{{ data.values|safe }}";
 
-        console.log(dataset)
-        let chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: dataset
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true
+        makeRequest().then((result) => {
+            let chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: result,
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
                     }
                 }
-            }
-        });
+            });
+        })
 
         async function makeRequest() {
-            let promise = await fetch('/servers');
-            let data = await promise.json();
-            console.log(data)
+            let promise = await fetch('http://localhost:8000/servers');
+            let responce = await promise.json();
+
+            return responce['dataset'];
         }
+        // call performAction every n second
+        setInterval(makeRequest, 30000);
+
     </script>
 </body>
+
 </html>

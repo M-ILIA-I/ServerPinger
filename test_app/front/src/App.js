@@ -4,9 +4,11 @@ import React, { useEffect } from 'react';
 import { Chart } from './Chart';
 
 function onLoad() {
-  makeRequest();
+  useEffect(()=>{ makeRequest()});
   // Use the data passed from Django
 }
+
+const intervalId = setInterval(makeRequest, 30000);
 
 export async function makeRequest() {
   let promise = await fetch('http://localhost:8000/servers');
